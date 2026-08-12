@@ -43,6 +43,8 @@ A web-based Departmental Complaint Management System for students and administra
 7. Add an environment variable named `SECRET_KEY` with a secure value.
 8. Deploy the service and open the generated public URL.
 
+Alternatively, this repo includes a `render.yaml` file so Render can auto-create the service when you connect the repository. The `render.yaml` will generate a `SECRET_KEY` for you automatically. If you prefer the Render dashboard, connect the repo and review the generated service settings.
+
 ### Notes for deployment
 - The app listens on `0.0.0.0` and uses `PORT` from the hosting environment.
 - Render will automatically provide the public URL once deploy is complete.

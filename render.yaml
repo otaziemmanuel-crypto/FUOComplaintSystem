@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: fuo-complaint-system
+    repo: https://github.com/otaziemmanuel-crypto/FUOComplaintSystem
+    branch: main
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: SECRET_KEY
+        generate: true
