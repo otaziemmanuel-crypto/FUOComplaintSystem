@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-panel">
+  <h2>Submit a Complaint</h2>
+  <form method="post" action="{{ url_for('submit_complaint') }}">
+    <label>Title</label>
+    <input type="text" name="title" placeholder="Brief complaint title" required>
+
+    <label>Category</label>
+    <select name="category_id" required>
+      <option value="">Select category</option>
+      {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Description</label>
+    <textarea name="description" rows="6" placeholder="Describe the complaint in detail" required></textarea>
+
+    <button type="submit">Submit Complaint</button>
+  </form>
+</section>
+{% endblock %}

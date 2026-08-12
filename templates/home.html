@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero">
+  <h1>FUO Computer Science Department Complaint System</h1>
+  <p>Submit grievances digitally, track their progress, and let administrators review complaints with sentiment analysis.</p>
+  <div class="hero-actions">
+    <a class="button" href="{{ url_for('student_register') }}">Register as Student</a>
+    <a class="button button-secondary" href="{{ url_for('student_login') }}">Student Login</a>
+    <a class="button button-secondary" href="{{ url_for('admin_login') }}">Admin Login</a>
+  </div>
+</div>
+{% endblock %}

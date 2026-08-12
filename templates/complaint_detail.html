@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="detail-panel">
+  <h2>Complaint Detail</h2>
+  <div class="detail-card">
+    <p><strong>Title:</strong> {{ complaint.title }}</p>
+    <p><strong>Category:</strong> {{ complaint.category_name }}</p>
+    <p><strong>Status:</strong> {{ complaint.status }}</p>
+    <p><strong>Sentiment:</strong> {{ complaint.sentiment }} <small>({{ complaint.sentiment_score }})</small></p>
+    {% if admin_view %}
+      <p><strong>Student:</strong> {{ complaint.student_name }} &lt;{{ complaint.student_email }}&gt;</p>
+    {% endif %}
+    <p><strong>Description:</strong></p>
+    <p class="complaint-text">{{ complaint.description }}</p>
+  </div>
+
+  {% if admin_view %}
+  <section class="form-panel">
+    <h3>Respond to Complaint</h3>
+    <form method="post" action="{{ url_for('admin_complaint_detail', complaint_id=complaint.id) }}">
+      <label>Status</label>
+      <select name="status" required>
+        {% for status in status_labels %}
+          <option value="{{ status }}" {% if complaint.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Response Message</label>
+      <textarea name="message" rows="4" placeholder="Write your response here"></textarea>
+
+      <button type="submit">Save Response</button>
+    </form>
+  </section>
+  {% endif %}
+
+  <section class="table-panel">
+    <h3>Response History</h3>
+    {% if responses %}
+      <table>
+        <thead>
+          <tr>
+            <th>Admin</th>
+            <th>Message</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for response in responses %}
+            <tr>
+              <td>{{ response.admin_name }}</td>
+              <td>{{ response.message }}</td>
+              <td>{{ response.created_at.split('T')[0] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>No response has been added yet.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

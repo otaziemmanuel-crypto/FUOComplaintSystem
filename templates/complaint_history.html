@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="table-panel">
+  <h2>My Complaints</h2>
+  {% if complaints %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Sentiment</th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for complaint in complaints %}
+          <tr>
+            <td><a href="{{ url_for('student_complaint_detail', complaint_id=complaint.id) }}">{{ complaint.title }}</a></td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.sentiment }}</td>
+            <td>{{ complaint.sentiment_score }}</td>
+            <td>{{ complaint.created_at.split('T')[0] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have not submitted any complaints yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

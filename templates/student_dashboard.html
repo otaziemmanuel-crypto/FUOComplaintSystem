@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="dashboard-grid">
+  <div class="card">
+    <h2>Welcome, {{ user.name }}</h2>
+    <p>Track your complaints and monitor responses from the department.</p>
+  </div>
+  <div class="card">
+    <h3>Total Complaints</h3>
+    <p class="metric">{{ total }}</p>
+  </div>
+  <div class="card">
+    <h3>Open Complaints</h3>
+    <p class="metric">{{ open_count }}</p>
+  </div>
+  <div class="card">
+    <h3>Negative Sentiment</h3>
+    <p class="metric">{{ negative_count }}</p>
+  </div>
+</section>
+
+<section class="table-panel">
+  <h3>Recent Complaints</h3>
+  {% if recent %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Sentiment</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in recent %}
+          <tr>
+            <td><a href="{{ url_for('student_complaint_detail', complaint_id=item.id) }}">{{ item.title }}</a></td>
+            <td>{{ item.category_name }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.sentiment }}</td>
+            <td>{{ item.created_at.split('T')[0] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No complaints submitted yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

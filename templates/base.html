@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FUO Complaint System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="{{ url_for('home') }}">FUO Complaint System</a>
+      <nav>
+        {% if session.user_role == 'student' %}
+          <a href="{{ url_for('student_dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('submit_complaint') }}">Submit Complaint</a>
+          <a href="{{ url_for('student_history') }}">My Complaints</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% elif session.user_role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+          <a href="{{ url_for('admin_complaint_list') }}">Manage Complaints</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('student_login') }}">Student Login</a>
+          <a href="{{ url_for('student_register') }}">Student Register</a>
+          <a href="{{ url_for('admin_login') }}">Admin Login</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Federal University Otuoke - Departmental Complaint Management System</p>
+    </div>
+  </footer>
+</body>
+</html>

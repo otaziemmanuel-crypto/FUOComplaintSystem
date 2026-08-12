@@ -1,0 +1,241 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fb;
+  color: #2f3e4d;
+}
+
+.container {
+  width: min(1100px, 100% - 2rem);
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.site-header {
+  background: #1b4b7a;
+  color: #fff;
+  padding: 1rem 0;
+}
+
+.site-header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+nav a {
+  color: #dce8f4;
+  text-decoration: none;
+  margin-left: 1rem;
+  font-size: 0.95rem;
+}
+
+.hero {
+  background: #ffffff;
+  padding: 3rem;
+  border-radius: 14px;
+  margin-top: 1rem;
+  text-align: center;
+  box-shadow: 0 10px 35px rgba(31, 60, 92, 0.08);
+}
+
+.hero h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.hero p {
+  margin-bottom: 1.5rem;
+  color: #576873;
+  line-height: 1.6;
+}
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  background: #1b4b7a;
+  color: white;
+  padding: 0.95rem 1.5rem;
+  border-radius: 8px;
+  margin: 0.3rem;
+}
+
+.button-secondary {
+  background: #ffffff;
+  color: #1b4b7a;
+  border: 1px solid #1b4b7a;
+}
+
+.form-panel, .card, .table-panel, .detail-panel, .filters-panel {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.8rem;
+  box-shadow: 0 10px 28px rgba(31, 60, 92, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.form-panel h2, .detail-panel h2, .table-panel h2, .filters-panel h2, .card h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin: 1rem 0 0.35rem;
+  color: #4b5e72;
+}
+
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+  width: 100%;
+  border: 1px solid #d8e2ed;
+  border-radius: 10px;
+  padding: 0.95rem 1rem;
+  font-size: 0.95rem;
+  color: #24323a;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  background: #1b4b7a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.95rem 1.3rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f4f8ff;
+}
+
+thead th {
+  text-align: left;
+  padding: 0.95rem 1rem;
+  font-weight: 600;
+  color: #1b3b64;
+}
+
+tbody td {
+  padding: 0.95rem 1rem;
+  border-top: 1px solid #ebf0f4;
+}
+
+tbody tr:hover {
+  background: #fafcff;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  padding: 1.5rem;
+}
+
+.small-card {
+  text-align: center;
+}
+
+.metric {
+  font-size: 2.5rem;
+  margin: 0.5rem 0 0;
+  color: #1b4b7a;
+}
+
+.detail-card {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f9fbff;
+}
+
+.complaint-text {
+  margin-top: 0.5rem;
+  line-height: 1.7;
+}
+
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.flash {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.flash.success {
+  background: #e3f6e7;
+  color: #256028;
+}
+
+.flash.error {
+  background: #fde8e6;
+  color: #8b1d18;
+}
+
+.footer {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #556577;
+}
+
+@media (max-width: 760px) {
+  .site-header .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav {
+    margin-top: 0.75rem;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tbody tr {
+    margin-bottom: 1rem;
+    border: 1px solid #e8eff5;
+    border-radius: 12px;
+    padding: 0.85rem;
+  }
+
+  tbody td {
+    border: none;
+    display: block;
+    padding: 0.3rem 0;
+  }
+
+  tbody td:before {
+    content: attr(data-label);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+}

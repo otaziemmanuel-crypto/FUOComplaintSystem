@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-panel">
+  <h2>Student Login</h2>
+  <form method="post" action="{{ url_for('student_login') }}">
+    <label>Email</label>
+    <input type="email" name="email" placeholder="student@fuo.edu.ng" required>
+
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <button type="submit">Login</button>
+  </form>
+  <p class="small">New student? <a href="{{ url_for('student_register') }}">Register here</a>.</p>
+</section>
+{% endblock %}

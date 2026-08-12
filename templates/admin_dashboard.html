@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="dashboard-grid">
+  <div class="card">
+    <h2>Administrator Dashboard</h2>
+    <p>Monitor student complaints and sentiment-driven priority cases.</p>
+  </div>
+  <div class="card">
+    <h3>Total Complaints</h3>
+    <p class="metric">{{ total }}</p>
+  </div>
+  <div class="card">
+    <h3>Pending Complaints</h3>
+    <p class="metric">{{ pending }}</p>
+  </div>
+  <div class="card">
+    <h3>Negative Sentiment</h3>
+    <p class="metric">{{ negative }}</p>
+  </div>
+</section>
+
+<section class="summary-row">
+  <div class="card small-card">
+    <h4>Positive</h4>
+    <p>{{ sentiment_map.positive or 0 }}</p>
+  </div>
+  <div class="card small-card">
+    <h4>Neutral</h4>
+    <p>{{ sentiment_map.neutral or 0 }}</p>
+  </div>
+  <div class="card small-card">
+    <h4>Negative</h4>
+    <p>{{ sentiment_map.negative or 0 }}</p>
+  </div>
+</section>
+
+<section class="table-panel">
+  <h3>Urgent Negative Complaints</h3>
+  {% if urgent %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Student</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for complaint in urgent %}
+          <tr>
+            <td><a href="{{ url_for('admin_complaint_detail', complaint_id=complaint.id) }}">{{ complaint.title }}</a></td>
+            <td>{{ complaint.student_name }}</td>
+            <td>{{ complaint.category_name }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.created_at.split('T')[0] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No urgent negative complaints pending.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="filters-panel">
+  <h2>Manage Complaints</h2>
+  <form method="get" action="{{ url_for('admin_complaint_list') }}">
+    <label>Filter by sentiment</label>
+    <select name="sentiment">
+      <option value="">All</option>
+      <option value="positive" {% if selected_sentiment == 'positive' %}selected{% endif %}>Positive</option>
+      <option value="neutral" {% if selected_sentiment == 'neutral' %}selected{% endif %}>Neutral</option>
+      <option value="negative" {% if selected_sentiment == 'negative' %}selected{% endif %}>Negative</option>
+    </select>
+
+    <label>Filter by status</label>
+    <select name="status">
+      <option value="">All</option>
+      {% for status in status_labels %}
+        <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Apply</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  {% if complaints %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Student</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Sentiment</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for complaint in complaints %}
+          <tr>
+            <td><a href="{{ url_for('admin_complaint_detail', complaint_id=complaint.id) }}">{{ complaint.title }}</a></td>
+            <td>{{ complaint.student_name }}</td>
+            <td>{{ complaint.category_name }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.sentiment }}</td>
+            <td>{{ complaint.created_at.split('T')[0] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No complaints match the filters.</p>
+  {% endif %}
+</section>
+{% endblock %}
