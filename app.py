@@ -87,6 +87,15 @@ def init_db():
             ('Department Admin', 'admin@fuo.edu.ng', generate_password_hash('admin123'), 'admin', now)
         )
 
+    # ensure a system user exists to post automated responses
+    cursor.execute("SELECT id FROM users WHERE role = 'system' LIMIT 1")
+    if cursor.fetchone() is None:
+        now = datetime.utcnow().isoformat()
+        cursor.execute(
+            'INSERT INTO users (name, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?)',
+            ('Auto Responder', 'system@fuo.edu.ng', generate_password_hash('system'), 'system', now)
+        )
+
     db.commit()
 
 
@@ -172,6 +181,33 @@ def student_login():
     return render_template('student_login.html')
 
 
+@app.route('/admin/register', methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        if not name or not email or not password:
+            flash('Please fill in all administrator registration fields.', 'error')
+            return render_template('admin_register.html')
+
+        existing = query_db('SELECT * FROM users WHERE email = ?', (email,), one=True)
+        if existing:
+            flash('Email already exists. Use a different email.', 'error')
+            return render_template('admin_register.html')
+
+        db = get_db()
+        db.execute(
+            'INSERT INTO users (name, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?)',
+            (name, email, generate_password_hash(password), 'admin', datetime.utcnow().isoformat())
+        )
+        db.commit()
+        flash('Administrator registration successful. Please log in.', 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin_register.html')
+
+
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -232,15 +268,37 @@ def submit_complaint():
         if not title or not category_id or not description:
             flash('Please complete all fields before submitting your complaint.', 'error')
             return render_template('submit_complaint.html', categories=categories)
-
         sentiment, score = analyze_text(description)
         now = datetime.utcnow().isoformat()
         db = get_db()
-        db.execute(
+        cur = db.cursor()
+        cur.execute(
             '''INSERT INTO complaints (student_id, category_id, title, description, sentiment, sentiment_score, status, created_at, updated_at)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
             (user['id'], category_id, title, description, sentiment, score, 'submitted', now, now)
         )
+        complaint_id = cur.lastrowid
+
+        # generate automated response based on sentiment
+        system_row = query_db('SELECT id FROM users WHERE role = ?', ('system',), one=True)
+        system_id = system_row['id'] if system_row else None
+
+        if system_id:
+            if sentiment == 'negative':
+                if score <= -0.5:
+                    auto_msg = f"We're very sorry to hear this. Your complaint (ID {complaint_id}) has been flagged as urgent and will be prioritized by the department."
+                else:
+                    auto_msg = f"Thank you for reporting this issue. Your complaint (ID {complaint_id}) has been recorded and will be reviewed by administrators soon."
+            elif sentiment == 'positive':
+                auto_msg = f"Thanks for the positive feedback. Your submission (ID {complaint_id}) has been recorded."
+            else:
+                auto_msg = f"Thank you for your feedback. Your complaint (ID {complaint_id}) has been recorded and will be reviewed by administrators."
+
+            cur.execute(
+                'INSERT INTO responses (complaint_id, admin_id, message, created_at) VALUES (?, ?, ?, ?)',
+                (complaint_id, system_id, auto_msg, now)
+            )
+
         db.commit()
         flash(f'Complaint submitted successfully with {sentiment} sentiment.', 'success')
         return redirect(url_for('student_history'))

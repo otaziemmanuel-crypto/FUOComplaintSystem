@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="form-panel">
+  <h2>Administrator Registration</h2>
+  <form method="post" action="{{ url_for('admin_register') }}">
+    <label>Name</label>
+    <input type="text" name="name" placeholder="Admin Full Name" required>
+
+    <label>Email</label>
+    <input type="email" name="email" placeholder="admin@fuo.edu.ng" required>
+
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Create password" required>
+
+    <button type="submit">Register Admin</button>
+  </form>
+  <p class="small">Already an administrator? <a href="{{ url_for('admin_login') }}">Login here</a>.</p>
+</section>
+{% endblock %}
