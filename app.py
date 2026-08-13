@@ -279,20 +279,30 @@ def submit_complaint():
         )
         complaint_id = cur.lastrowid
 
-        # generate automated response based on sentiment
+        # generate automated response based on complaint content and category (not sentiment)
         system_row = query_db('SELECT id FROM users WHERE role = ?', ('system',), one=True)
         system_id = system_row['id'] if system_row else None
 
+        # get category name for category-specific messages
+        cat_row = query_db('SELECT name FROM complaint_categories WHERE id = ?', (category_id,), one=True)
+        category_name = cat_row['name'] if cat_row else 'Other'
+
         if system_id:
-            if sentiment == 'negative':
-                if score <= -0.5:
-                    auto_msg = f"We're very sorry to hear this. Your complaint (ID {complaint_id}) has been flagged as urgent and will be prioritized by the department."
-                else:
-                    auto_msg = f"Thank you for reporting this issue. Your complaint (ID {complaint_id}) has been recorded and will be reviewed by administrators soon."
-            elif sentiment == 'positive':
-                auto_msg = f"Thanks for the positive feedback. Your submission (ID {complaint_id}) has been recorded."
+            text = description.lower()
+            urgent_keywords = ['urgent', 'immediately', 'asap', 'emergency', 'danger', 'harassed', 'harassment', 'assault']
+            facility_keywords = ['broken', 'no water', 'power', 'electric', 'leak', 'leaking', 'broken toilet', 'broken door']
+
+            is_urgent = any(k in text for k in urgent_keywords)
+            is_facility = any(k in text for k in facility_keywords) or category_name.lower() == 'facilities'
+
+            if is_urgent:
+                auto_msg = f"We're very sorry to hear this. Your complaint (ID {complaint_id}) has been flagged as urgent and will be prioritized by the department."
+            elif is_facility:
+                auto_msg = f"Thanks for reporting this facilities issue (ID {complaint_id}). Facilities staff have been notified and will look into it." 
+            elif category_name.lower() == 'examination':
+                auto_msg = f"Your examination-related complaint (ID {complaint_id}) has been recorded. The examinations office will review it and respond as necessary." 
             else:
-                auto_msg = f"Thank you for your feedback. Your complaint (ID {complaint_id}) has been recorded and will be reviewed by administrators."
+                auto_msg = f"Thank you. Your complaint (ID {complaint_id}) has been recorded and will be reviewed by administrators soon."
 
             cur.execute(
                 'INSERT INTO responses (complaint_id, admin_id, message, created_at) VALUES (?, ?, ?, ?)',
@@ -300,7 +310,7 @@ def submit_complaint():
             )
 
         db.commit()
-        flash(f'Complaint submitted successfully with {sentiment} sentiment.', 'success')
+        flash('Complaint submitted successfully and an automatic acknowledgement was posted.', 'success')
         return redirect(url_for('student_history'))
 
     return render_template('submit_complaint.html', categories=categories)
